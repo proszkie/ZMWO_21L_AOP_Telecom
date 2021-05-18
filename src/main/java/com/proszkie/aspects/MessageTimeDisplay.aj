@@ -17,7 +17,7 @@ public aspect MessageTimeDisplay
 	/* XXX Pointcut and advice ---------------------------------------- */
 
 	// Przekroj przechwytujacy wywolania print i println dla PrintStream
-	pointcut printcut(): call(* PrintStream.print*(..));
+	pointcut printcut(): call(* PrintStream.print*(..)) && !within(aspects..*);
 
 	// Przed wyswietleniem wiadomosci podajemy czas jej nadejscia
 	before(): printcut()
