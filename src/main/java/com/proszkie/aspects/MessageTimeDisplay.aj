@@ -1,4 +1,4 @@
-package aspects;
+package com.proszkie.aspects;
 
 import java.io.PrintStream;
 import java.util.Calendar;
@@ -17,7 +17,7 @@ public aspect MessageTimeDisplay
 	/* XXX Pointcut and advice ---------------------------------------- */
 
 	// Przekroj przechwytujacy wywolania print i println dla PrintStream
-	pointcut printcut(): call(* PrintStream.print*(..)) && !within(aspects..*);
+	pointcut printcut(): call(* PrintStream.print*(..)) && !within(com.proszkie.aspects..*);
 
 	// Przed wyswietleniem wiadomosci podajemy czas jej nadejscia
 	before(): printcut()
