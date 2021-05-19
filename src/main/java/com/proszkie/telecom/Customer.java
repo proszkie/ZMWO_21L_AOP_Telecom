@@ -16,6 +16,7 @@ about the software, its performance or its conformity to any specification.
 
 */
 package com.proszkie.telecom;
+import java.util.Optional;
 import java.util.Vector;
 
 /**
@@ -75,10 +76,10 @@ public class Customer {
     /**
      * Make a new call to receiver
      */
-    public Call call(Customer receiver) {
+    public Optional<Call> call(Customer receiver) {
         Call call = new Call(this, receiver);
         addCall(call);
-        return call;
+        return Optional.of(call);
     }
 
     /**
