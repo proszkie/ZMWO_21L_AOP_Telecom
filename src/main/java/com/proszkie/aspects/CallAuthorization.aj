@@ -1,6 +1,5 @@
 package com.proszkie.aspects;
 
-import com.proszkie.telecom.Call;
 import com.proszkie.telecom.Customer;
 
 import java.io.BufferedReader;
@@ -16,6 +15,7 @@ public aspect CallAuthorization {
 
     private static final Map<String, String> credentials = new HashMap<>();
     private static final File credentialsFile = new File("/tmp/zmwo-credentials.txt");
+    private String password;
 
     static {
         loadCredentials();
@@ -37,23 +37,26 @@ public aspect CallAuthorization {
 
     pointcut customerCall(Customer caller): this(caller) && execution(* com.proszkie.telecom.Customer.call(..));
 
-    Object around(Customer caller): customerCall(caller) {
+    before(Customer caller): customerCall(caller) {
         System.out.println("Password for " + caller + " required: ");
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         try {
-            String password = br.readLine();
-            if (credentials.containsKey(caller.toString())) {
-                if (password.equals(credentials.get(caller.toString()))) {
-                    System.out.println("Successful authorization.");
-                    return proceed(caller);
-                } else {
-                    System.out.println("Wrong password");
-                }
-            } else {
-                System.out.println("Customer does not exist");
-            }
+            password = br.readLine();
         } catch (IOException e) {
             System.out.println("Error occured during reading the password");
+        }
+    }
+
+    Object around(Customer caller): customerCall(caller) {
+        if (credentials.containsKey(caller.toString())) {
+            if (password.equals(credentials.get(caller.toString()))) {
+                System.out.println("Successful authorization.");
+                return proceed(caller);
+            } else {
+                System.out.println("Wrong password. Interrupting the call...");
+            }
+        } else {
+            System.out.println("Customer does not exist");
         }
 
         return Optional.empty();
